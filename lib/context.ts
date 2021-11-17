@@ -1,3 +1,15 @@
 import { createContext } from 'react'
 
-export const UserContext = createContext({ user: null, username: null })
+interface IContext {
+  user: {
+    photoURL: string | null
+    uid: string | null
+    displayName: string | null
+  } | null
+  username: string | null
+}
+
+export const UserContext = createContext({
+  user: null,
+  username: null,
+} as IContext)

@@ -8,9 +8,6 @@ import debounce from 'lodash.debounce'
 export default function Enter(props) {
   const { user, username } = useContext(UserContext)
 
-  // 1. user signed out <SignInButton />
-  // 2. user signed in, but missing username <UsernameForm />
-  // 3. user signed in, has username <SignOutButton />
   return (
     <main>
       <MetaTags title="Enter" description="Sign up for this amazing app!" />
@@ -63,17 +60,17 @@ function UsernameForm() {
     e.preventDefault()
 
     // Create refs for both documents
-    const userDoc = firestore.doc(`users/${user.uid}`)
+    const userDoc = firestore.doc(`users/${user?.uid}`)
     const usernameDoc = firestore.doc(`usernames/${formValue}`)
 
     // Commit both docs together as a batch write.
     const batch = firestore.batch()
     batch.set(userDoc, {
       username: formValue,
-      photoURL: user.photoURL,
-      displayName: user.displayName,
+      photoURL: user?.photoURL,
+      displayName: user?.displayName,
     })
-    batch.set(usernameDoc, { uid: user.uid })
+    batch.set(usernameDoc, { uid: user?.uid })
 
     await batch.commit()
   }
@@ -97,8 +94,6 @@ function UsernameForm() {
     }
   }
 
-  //
-
   useEffect(() => {
     checkUsername(formValue)
   }, [formValue])
@@ -119,36 +114,34 @@ function UsernameForm() {
   )
 
   return (
-    !username && (
-      <section>
-        <h3>Choose Username</h3>
-        <form onSubmit={onSubmit}>
-          <input
-            name="username"
-            placeholder="myname"
-            value={formValue}
-            onChange={onChange}
-          />
-          <UsernameMessage
-            username={formValue}
-            isValid={isValid}
-            loading={loading}
-          />
-          <button type="submit" className="btn-green" disabled={!isValid}>
-            Choose
-          </button>
+    <section>
+      <h3>Choose Username</h3>
+      <form onSubmit={onSubmit}>
+        <input
+          name="username"
+          placeholder="myname"
+          value={formValue}
+          onChange={onChange}
+        />
+        <UsernameMessage
+          username={formValue}
+          isValid={isValid}
+          loading={loading}
+        />
+        <button type="submit" className="btn-green" disabled={!isValid}>
+          Choose
+        </button>
 
-          <h3>Debug State</h3>
-          <div>
-            Username: {formValue}
-            <br />
-            Loading: {loading.toString()}
-            <br />
-            Username Valid: {isValid.toString()}
-          </div>
-        </form>
-      </section>
-    )
+        <h3>Debug State</h3>
+        <div>
+          Username: {formValue}
+          <br />
+          Loading: {loading.toString()}
+          <br />
+          Username Valid: {isValid.toString()}
+        </div>
+      </form>
+    </section>
   )
 }
 

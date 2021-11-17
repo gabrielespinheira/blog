@@ -24,14 +24,14 @@ function PostManager() {
   const [preview, setPreview] = useState(false)
 
   const router = useRouter()
-  const { slug } = router.query
+  const { slug } = router.query as any
 
   const postRef = firestore
     .collection('users')
-    .doc(auth.currentUser.uid)
+    .doc(auth?.currentUser?.uid)
     .collection('posts')
     .doc(slug)
-  const [post] = useDocumentDataOnce(postRef)
+  const [post] = useDocumentDataOnce(postRef) as any
 
   return (
     <main className={styles.container}>

@@ -1,5 +1,3 @@
-import type { NextPage } from 'next'
-
 import PostFeed from 'components/PostFeed'
 import MetaTags from 'components/MetaTags'
 import Loader from 'components/Loader'
@@ -24,7 +22,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-const Home: NextPage = (props) => {
+const Home = (props) => {
   const [posts, setPosts] = useState(props.posts)
   const [loading, setLoading] = useState(false)
 

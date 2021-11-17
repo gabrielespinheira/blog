@@ -25,7 +25,7 @@ export default function AdminPostsPage(props) {
 function PostList() {
   const ref = firestore
     .collection('users')
-    .doc(auth.currentUser.uid)
+    .doc(auth?.currentUser?.uid)
     .collection('posts')
   const query = ref.orderBy('createdAt')
   const [querySnapshot] = useCollection(query)
@@ -54,7 +54,7 @@ function CreateNewPost() {
   // Create a new post in firestore
   const createPost = async (e) => {
     e.preventDefault()
-    const uid = auth.currentUser.uid
+    const uid = auth?.currentUser?.uid
     const ref = firestore
       .collection('users')
       .doc(uid)
