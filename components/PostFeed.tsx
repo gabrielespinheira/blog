@@ -1,22 +1,26 @@
 import Link from 'next/link'
+import { IPost } from 'types'
 
-export default function PostFeed({
-  posts,
-  admin,
-}: {
-  posts: any
+interface IPostFeed {
+  posts: IPost[]
   admin?: any
-}) {
-  return posts
-    ? posts.map((post) => (
-        <PostItem post={post} key={post.slug} admin={admin} />
-      ))
-    : null
 }
 
-function PostItem({ post, admin = false }) {
-  // Naive method to calc word count and read time
-  const wordCount = post?.content.trim().split(/\s+/g).length
+export default function PostFeed({ posts, admin }: IPostFeed) {
+  return (
+    <>
+      {posts &&
+        posts.map((post: IPost) => (
+          <PostItem post={post} key={post.slug} admin={admin} />
+        ))}
+
+      {!posts && <p>Not found</p>}
+    </>
+  )
+}
+
+function PostItem({ post, admin = false }: { post: IPost; admin: boolean }) {
+  const wordCount = post.content.trim().split(/\s+/g).length
   const minutesToRead = (wordCount / 100 + 1).toFixed(0)
 
   return (
@@ -27,7 +31,7 @@ function PostItem({ post, admin = false }) {
         </a>
       </Link>
 
-      <Link href={`/${post.username}/${post.slug}`}>
+      <Link href={`/${post.username}/${post.slug}`} passHref>
         <h2>
           <a>{post.title}</a>
         </h2>
@@ -43,7 +47,7 @@ function PostItem({ post, admin = false }) {
       {/* If admin view, show extra controls for user */}
       {admin && (
         <>
-          <Link href={`/admin/${post.slug}`}>
+          <Link href={`/admin/${post.slug}`} passHref>
             <h3>
               <button className="btn-blue">Edit</button>
             </h3>

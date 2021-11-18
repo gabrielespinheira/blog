@@ -1,34 +1,21 @@
-import PostFeed from 'components/PostFeed'
-import MetaTags from 'components/MetaTags'
-import Loader from 'components/Loader'
-import { firestore, fromMillis, postToJSON } from 'lib/firebase'
-
 import { useState } from 'react'
 
-// Max post to query per page
-const LIMIT = 10
+import { PostFeed, MetaTags, Loader } from 'components'
+import { firestore, fromMillis, postToJSON } from 'lib/firebase'
+import { IPost } from 'types'
 
-export async function getServerSideProps(context) {
-  const postsQuery = firestore
-    .collectionGroup('posts')
-    .where('published', '==', true)
-    .orderBy('createdAt', 'desc')
-    .limit(LIMIT)
+const LIMIT = 10 // Max post to query per page
 
-  const posts = (await postsQuery.get()).docs.map(postToJSON)
-
-  return {
-    props: { posts }, // will be passed to the page component as props
-  }
+interface IHome {
+  postsProp: IPost[]
 }
 
-const Home = (props) => {
-  const [posts, setPosts] = useState(props.posts)
+export default function Home({ postsProp }: IHome) {
+  const [posts, setPosts] = useState(postsProp)
   const [loading, setLoading] = useState(false)
 
   const [postsEnd, setPostsEnd] = useState(false)
 
-  // Get next page in pagination query
   const getMorePosts = async () => {
     setLoading(true)
     const last = posts[posts.length - 1]
@@ -45,7 +32,7 @@ const Home = (props) => {
       .startAfter(cursor)
       .limit(LIMIT)
 
-    const newPosts = (await query.get()).docs.map((doc) => doc.data())
+    const newPosts: any = (await query.get()).docs.map((doc) => doc.data())
 
     setPosts(posts.concat(newPosts))
     setLoading(false)
@@ -88,4 +75,16 @@ const Home = (props) => {
   )
 }
 
-export default Home
+export async function getServerSideProps() {
+  const postsQuery = firestore
+    .collectionGroup('posts')
+    .where('published', '==', true)
+    .orderBy('createdAt', 'desc')
+    .limit(LIMIT)
+
+  const postsProp = (await postsQuery.get()).docs.map(postToJSON)
+
+  return {
+    props: { postsProp },
+  }
+}
