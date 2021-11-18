@@ -38,7 +38,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link href={`/${username}`} passHref>
-                <img src={user?.photoURL || '/hacker.png'} alt={'Avatar'} />
+                <img src={user?.photoURL || '/anonymous.png'} alt={'Avatar'} />
               </Link>
             </li>
           </>
