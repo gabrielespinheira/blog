@@ -1,4 +1,4 @@
-import { getUserWithUsername, postToJSON } from 'lib/firebase'
+import { getUserWithUsername, postToJSON } from 'services/firebase'
 import UserProfile from 'components/UserProfile'
 import MetaTags from 'components/MetaTags'
 import PostFeed from 'components/PostFeed'

@@ -1,15 +1,14 @@
+import { useDocumentData } from 'react-firebase-hooks/firestore'
+import Link from 'next/link'
+
 import styles from 'styles/Post.module.css'
 import PostContent from 'components/PostContent'
 import HeartButton from 'components/HeartButton'
 import AuthCheck from 'components/AuthCheck'
 import MetaTags from 'components/MetaTags'
-import { UserContext } from 'lib/context'
-import { firestore, getUserWithUsername, postToJSON } from '../../lib/firebase'
-
-import Link from 'next/link'
-import { useDocumentData } from 'react-firebase-hooks/firestore'
-import { useContext } from 'react'
+import { firestore, getUserWithUsername, postToJSON } from 'services/firebase'
 import { IPost } from 'types'
+import { useAuth } from 'hooks'
 
 export async function getStaticProps({ params }) {
   const { username, slug } = params
@@ -53,7 +52,7 @@ export default function Post(props) {
 
   const post: IPost = realtimePost || props.post
 
-  const { user: currentUser } = useContext(UserContext)
+  const { user: currentUser } = useAuth()
 
   return (
     <main className={styles.container}>

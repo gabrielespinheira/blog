@@ -1,16 +1,16 @@
-import { auth, firestore, googleAuthProvider } from 'lib/firebase'
-import { UserContext } from 'lib/context'
+import { useEffect, useState, useCallback } from 'react'
+
 import MetaTags from 'components/MetaTags'
-
-import { useEffect, useState, useCallback, useContext } from 'react'
 import debounce from 'lodash.debounce'
+import { useAuth } from 'hooks'
+import { firestore } from 'services/firebase'
 
-export default function Enter(props) {
-  const { user, username } = useContext(UserContext)
+export default function Login() {
+  const { user, username } = useAuth()
 
   return (
     <main>
-      <MetaTags title="Enter" description="Sign up for this amazing app!" />
+      <MetaTags title="Login" description="Sign up for this amazing app!" />
       {user ? (
         !username ? (
           <UsernameForm />
@@ -26,9 +26,7 @@ export default function Enter(props) {
 
 // Sign in with Google button
 function SignInButton() {
-  const signInWithGoogle = async () => {
-    await auth.signInWithPopup(googleAuthProvider)
-  }
+  const { signInWithGoogle } = useAuth()
 
   return (
     <>
@@ -36,34 +34,29 @@ function SignInButton() {
         {/* <img src={'/google.png'} width="30px" />  */}
         Sign in with Google
       </button>
-      <button onClick={() => auth.signInAnonymously()}>
-        Sign in Anonymously
-      </button>
     </>
   )
 }
 
 // Sign out button
 function SignOutButton() {
-  return <button onClick={() => auth.signOut()}>Sign Out</button>
+  const { signOut } = useAuth()
+  return <button onClick={signOut}>Sign Out</button>
 }
 
 // Username form
 function UsernameForm() {
+  const { user } = useAuth()
   const [formValue, setFormValue] = useState('')
   const [isValid, setIsValid] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const { user, username } = useContext(UserContext)
-
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    // Create refs for both documents
     const userDoc = firestore.doc(`users/${user?.uid}`)
     const usernameDoc = firestore.doc(`usernames/${formValue}`)
 
-    // Commit both docs together as a batch write.
     const batch = firestore.batch()
     batch.set(userDoc, {
       username: formValue,
@@ -76,11 +69,9 @@ function UsernameForm() {
   }
 
   const onChange = (e) => {
-    // Force form value typed in form to match correct format
     const val = e.target.value.toLowerCase()
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/
 
-    // Only set form value if length is < 3 OR it passes regex
     if (val.length < 3) {
       setFormValue(val)
       setLoading(false)
@@ -98,8 +89,6 @@ function UsernameForm() {
     checkUsername(formValue)
   }, [formValue])
 
-  // Hit the database for username match after each debounced change
-  // useCallback is required for debounce to work
   const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {

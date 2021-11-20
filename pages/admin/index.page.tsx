@@ -1,16 +1,16 @@
+import { useState } from 'react'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import kebabCase from 'lodash.kebabcase'
 import toast from 'react-hot-toast'
-import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import styles from 'styles/Admin.module.css'
 import AuthCheck from 'components/AuthCheck'
 import PostFeed from 'components/PostFeed'
-import { UserContext } from 'lib/context'
-import { firestore, auth, serverTimestamp } from 'lib/firebase'
+import { firestore, auth, serverTimestamp } from 'services/firebase'
 
 import { IPost } from 'types'
+import { useAuth } from 'hooks'
 
 export default function AdminPostsPage() {
   return (
@@ -43,7 +43,7 @@ function PostList() {
 
 function CreateNewPost() {
   const router = useRouter()
-  const { username } = useContext(UserContext)
+  const { username } = useAuth()
   const [title, setTitle] = useState('')
 
   const slug = encodeURI(kebabCase(title))

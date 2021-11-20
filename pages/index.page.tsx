@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 import { PostFeed, MetaTags, Loader } from 'components'
-import { firestore, fromMillis, postToJSON } from 'lib/firebase'
 import { IPost } from 'types'
+import { firestore, fromMillis, postToJSON } from 'services/firebase'
 
 const LIMIT = 10 // Max post to query per page
 
@@ -13,7 +13,6 @@ interface IHome {
 export default function Home({ postsProp }: IHome) {
   const [posts, setPosts] = useState(postsProp)
   const [loading, setLoading] = useState(false)
-
   const [postsEnd, setPostsEnd] = useState(false)
 
   const getMorePosts = async () => {

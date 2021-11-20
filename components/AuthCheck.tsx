@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { useContext } from 'react'
 
-import { UserContext } from 'lib/context'
+import { useAuth } from 'hooks'
 
 interface IAuthCheck {
   children: JSX.Element | JSX.Element[]
@@ -9,7 +8,7 @@ interface IAuthCheck {
 }
 
 export default function AuthCheck({ children, fallback }: IAuthCheck) {
-  const { username } = useContext(UserContext)
+  const { username } = useAuth()
 
   if (!username) {
     return (

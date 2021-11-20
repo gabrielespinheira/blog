@@ -1,13 +1,12 @@
-import { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { UserContext } from 'lib/context'
-import { auth } from 'lib/firebase'
+import { auth } from 'services/firebase'
+import { useAuth } from 'hooks'
 
 // Top navbar
 export default function Navbar() {
-  const { user, username } = useContext(UserContext)
+  const { user, username } = useAuth()
 
   const router = useRouter()
 
