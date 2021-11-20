@@ -1,8 +1,9 @@
 import { createContext, useState, useEffect, useContext } from 'react'
+import { useRouter } from 'next/router'
 
 import { auth, firestore, googleAuthProvider } from 'services/firebase'
 import { IUser } from 'types'
-import { getStorage, setStorage } from 'services/storage'
+import { clearStorage, getStorage, setStorage } from 'services/storage'
 
 interface IAuthContextType {
   user: IUser | null | undefined
@@ -15,6 +16,7 @@ interface IAuthContextType {
 export const AuthContext = createContext({} as IAuthContextType)
 
 export function AuthContextProvider({ children }) {
+  const router = useRouter()
   const [user, setUser] = useState<IUser>()
   const [username, setUsername] = useState(null)
 
@@ -81,6 +83,8 @@ export function AuthContextProvider({ children }) {
 
   const signOut = async () => {
     await auth.signOut()
+    await clearStorage()
+    router.reload()
     return
   }
 

@@ -1,19 +1,9 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-
-import { auth } from 'services/firebase'
 import { useAuth } from 'hooks'
 
 // Top navbar
 export default function Navbar() {
-  const { user, username } = useAuth()
-
-  const router = useRouter()
-
-  const signOut = () => {
-    auth.signOut()
-    router.reload()
-  }
+  const { user, username, signOut } = useAuth()
 
   return (
     <nav className="navbar">

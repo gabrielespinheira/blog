@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/router'
 
 import MetaTags from 'components/MetaTags'
 import debounce from 'lodash.debounce'
@@ -6,7 +7,14 @@ import { useAuth } from 'hooks'
 import { firestore } from 'services/firebase'
 
 export default function Login() {
+  const router = useRouter()
   const { user, username } = useAuth()
+
+  useEffect(() => {
+    if (user && username) {
+      router.push(`/${username}`)
+    }
+  }, [])
 
   return (
     <main>
